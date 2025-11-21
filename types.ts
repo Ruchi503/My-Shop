@@ -34,6 +34,17 @@ export enum ViewState {
   ABOUT = 'ABOUT'
 }
 
+export interface ShippingDetails {
+  firstName: string;
+  lastName: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+}
+
 // --- Printify Integration Types ---
 
 export interface PrintifyImage {

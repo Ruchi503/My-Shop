@@ -7,9 +7,10 @@ interface CartDrawerProps {
   onClose: () => void;
   items: CartItem[];
   onUpdateQuantity: (id: number, delta: number) => void;
+  onCheckout: () => void;
 }
 
-export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, items, onUpdateQuantity }) => {
+export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, items, onUpdateQuantity, onCheckout }) => {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
@@ -75,7 +76,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, items, 
                 <span className="text-stone-500">Subtotal</span>
                 <span className="text-xl font-bold text-stone-800">${total.toFixed(2)}</span>
               </div>
-              <Button className="w-full" size="lg">
+              <Button 
+                className="w-full" 
+                size="lg" 
+                onClick={() => {
+                  onClose();
+                  onCheckout();
+                }}
+              >
                 Checkout
               </Button>
             </div>

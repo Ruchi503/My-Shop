@@ -52,7 +52,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         onClick={onClose}
       />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-        <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row pointer-events-auto animate-in zoom-in-95 duration-200">
+        <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row pointer-events-auto animate-zoom-in">
           
           {/* Image Section */}
           <div className="w-full md:w-1/2 bg-stone-50 relative h-64 md:h-auto">
@@ -126,7 +126,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
                 {/* Review Form */}
                 {showReviewForm && (
-                  <form onSubmit={handleSubmitReview} className="bg-stone-50 p-6 rounded-2xl mb-8 animate-in slide-in-from-top-2">
+                  <form onSubmit={handleSubmitReview} className="bg-stone-50 p-6 rounded-2xl mb-8 animate-slide-up">
                     <div className="mb-4">
                       <label className="block text-xs font-bold text-stone-500 uppercase mb-2">Rating</label>
                       <div className="flex gap-1">

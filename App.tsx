@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Product, CartItem, ViewState, Review } from './types';
+import { Product, CartItem, ViewState, Review, ShippingDetails } from './types';
 import { ProductCard } from './components/ProductCard';
 import { Button } from './components/Button';
 import { CartDrawer } from './components/CartDrawer';
 import { ShopAssistant } from './components/ShopAssistant';
 import { ProductModal } from './components/ProductModal';
-import { fetchProducts } from './services/productService';
+import { CheckoutModal } from './components/CheckoutModal';
+import { fetchProducts, submitOrderToBackend } from './services/productService';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>(ViewState.HOME);
@@ -13,6 +14,7 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
@@ -76,6 +78,12 @@ const App: React.FC = () => {
     }));
   };
 
+  const handleCheckout = async (shippingDetails: ShippingDetails) => {
+    await submitOrderToBackend(cartItems, shippingDetails);
+    // Clear cart after successful order (simulation)
+    setCartItems([]);
+  };
+
   const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
   
   const filteredProducts = selectedCategory === 'All' 
@@ -116,7 +124,10 @@ const App: React.FC = () => {
             >
               Shop
             </button>
-            <button className="text-sm font-medium text-stone-500 hover:text-stone-800 transition-colors">
+            <button 
+              onClick={() => setView(ViewState.ABOUT)}
+              className={`text-sm font-medium transition-colors ${view === ViewState.ABOUT ? 'text-stone-800' : 'text-stone-500 hover:text-stone-800'}`}
+            >
               About
             </button>
           </div>
@@ -143,23 +154,34 @@ const App: React.FC = () => {
         {view === ViewState.HOME && (
           <>
             {/* Hero Section */}
-            <section className="relative py-20 lg:py-32 overflow-hidden">
+            <section className="relative py-10 lg:py-20 overflow-hidden">
               <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-pink-100 rounded-full blur-3xl opacity-50 pointer-events-none" />
               <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-green-100 rounded-full blur-3xl opacity-50 pointer-events-none" />
               
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative text-center">
-                <span className="inline-block px-4 py-1.5 rounded-full bg-white border border-stone-200 text-stone-500 text-xs font-semibold tracking-wide mb-6">
+                
+                {/* Hero Image */}
+                <div className="w-full h-[300px] md:h-[500px] rounded-3xl overflow-hidden mb-12 shadow-2xl animate-zoom-in relative group">
+                  <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500 z-10" />
+                  <img 
+                    src="https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?q=80&w=2290&auto=format&fit=crop" 
+                    alt="Mochi Life" 
+                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000"
+                  />
+                </div>
+
+                <span className="inline-block px-4 py-1.5 rounded-full bg-white border border-stone-200 text-stone-500 text-xs font-semibold tracking-wide mb-6 animate-fade-in">
                   ✨ NEW COLLECTION ARRIVED
                 </span>
-                <h1 className="text-5xl md:text-7xl font-bold text-stone-800 mb-6 tracking-tight">
+                <h1 className="text-5xl md:text-7xl font-bold text-stone-800 mb-6 tracking-tight animate-slide-up">
                   Make life <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-purple-300">softer.</span>
                 </h1>
-                <p className="text-lg md:text-xl text-stone-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+                <p className="text-lg md:text-xl text-stone-500 max-w-2xl mx-auto mb-10 leading-relaxed animate-slide-up">
                   Curated stationery, home goods, and accessories designed to bring a little bit of joy and calm to your everyday routine.
                 </p>
-                <div className="flex justify-center gap-4">
+                <div className="flex justify-center gap-4 animate-slide-up">
                   <Button size="lg" onClick={() => setView(ViewState.SHOP)}>Shop Now</Button>
-                  <Button size="lg" variant="outline">Our Story</Button>
+                  <Button size="lg" variant="outline" onClick={() => setView(ViewState.ABOUT)}>Our Story</Button>
                 </div>
               </div>
             </section>
@@ -192,13 +214,13 @@ const App: React.FC = () => {
 
         {view === ViewState.SHOP && (
           <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-             <div className="text-center mb-12">
+             <div className="text-center mb-12 animate-fade-in">
                 <h1 className="text-4xl font-bold text-stone-800 mb-4">Shop All</h1>
                 <p className="text-stone-500">Find your new favorite thing.</p>
              </div>
 
              {/* Filters */}
-             <div className="flex flex-wrap justify-center gap-3 mb-12">
+             <div className="flex flex-wrap justify-center gap-3 mb-12 animate-fade-in">
                 {categories.map(cat => (
                   <button
                     key={cat}
@@ -214,7 +236,7 @@ const App: React.FC = () => {
                 ))}
              </div>
 
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-slide-up">
                {filteredProducts.map(product => (
                  <ProductCard 
                    key={product.id} 
@@ -230,6 +252,53 @@ const App: React.FC = () => {
                  No products found in this category.
                </div>
              )}
+          </section>
+        )}
+
+        {view === ViewState.ABOUT && (
+          <section className="max-w-4xl mx-auto px-4 py-20">
+            <div className="text-center mb-16 animate-slide-up">
+              <h1 className="text-4xl md:text-5xl font-bold text-stone-800 mb-6">Little things, big smiles.</h1>
+              <p className="text-lg text-stone-500 leading-relaxed max-w-2xl mx-auto">
+                Mochi & Co. isn't just a shop; it's a feeling. A feeling of warmth, coziness, and that specific joy you get when you find the perfect mug for your morning tea.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-20 animate-slide-up">
+              <div className="relative aspect-square rounded-3xl overflow-hidden shadow-xl rotate-2 hover:rotate-0 transition-transform duration-500">
+                <img src="https://picsum.photos/800/800?random=99" alt="Our studio" className="object-cover w-full h-full" />
+              </div>
+              <div className="space-y-6">
+                <h2 className="text-3xl font-bold text-stone-800">Our Story</h2>
+                <p className="text-stone-600 leading-relaxed">
+                  It all started with a doodle of a cloud. Our founder wanted to turn that doodle into a pillow, and thus, Mochi & Co. was born. 
+                </p>
+                <p className="text-stone-600 leading-relaxed">
+                  Today, we work with artists and sustainable print-on-demand partners (like Printify!) to bring whimsical designs to life on high-quality products, made just for you when you order them. This means less waste and more love.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-3xl p-12 shadow-sm text-center animate-slide-up">
+              <h2 className="text-2xl font-bold text-stone-800 mb-8">Why Mochi?</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                  <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">🌱</div>
+                  <h3 className="font-bold text-stone-800 mb-2">Eco-Conscious</h3>
+                  <p className="text-sm text-stone-500">Made to order to reduce waste.</p>
+                </div>
+                <div>
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">🎨</div>
+                  <h3 className="font-bold text-stone-800 mb-2">Artist Driven</h3>
+                  <p className="text-sm text-stone-500">Designs supporting real artists.</p>
+                </div>
+                <div>
+                  <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">✨</div>
+                  <h3 className="font-bold text-stone-800 mb-2">Quality First</h3>
+                  <p className="text-sm text-stone-500">Soft fabrics and durable materials.</p>
+                </div>
+              </div>
+            </div>
           </section>
         )}
       </main>
@@ -278,6 +347,18 @@ const App: React.FC = () => {
         onClose={() => setIsCartOpen(false)} 
         items={cartItems} 
         onUpdateQuantity={updateQuantity}
+        onCheckout={() => setIsCheckoutOpen(true)}
+      />
+
+      <CheckoutModal
+        isOpen={isCheckoutOpen}
+        onClose={() => {
+          setIsCheckoutOpen(false);
+          // If the cart is empty (order succeeded), close the cart drawer too if it was open
+          if (cartItems.length === 0) setIsCartOpen(false);
+        }}
+        cartItems={cartItems}
+        onSubmitOrder={handleCheckout}
       />
       
       <ProductModal 

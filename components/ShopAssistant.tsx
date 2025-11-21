@@ -39,7 +39,7 @@ export const ShopAssistant: React.FC = () => {
     <div className="fixed bottom-6 right-6 z-30 flex flex-col items-end gap-4">
       {/* Chat Window */}
       {isOpen && (
-        <div className="bg-white w-80 sm:w-96 h-[500px] rounded-3xl shadow-2xl border border-stone-100 flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
+        <div className="bg-white w-80 sm:w-96 h-[500px] rounded-3xl shadow-2xl border border-stone-100 flex flex-col overflow-hidden animate-slide-up">
           {/* Header */}
           <div className="bg-gradient-to-r from-pink-100 to-rose-50 p-4 flex justify-between items-center">
             <div className="flex items-center gap-3">
@@ -63,7 +63,7 @@ export const ShopAssistant: React.FC = () => {
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div 
-                  className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${
+                  className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed animate-fade-in ${
                     msg.role === 'user' 
                       ? 'bg-stone-800 text-white rounded-br-none' 
                       : 'bg-white border border-stone-100 text-stone-600 shadow-sm rounded-bl-none'
@@ -75,7 +75,7 @@ export const ShopAssistant: React.FC = () => {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-white border border-stone-100 p-3 rounded-2xl rounded-bl-none shadow-sm flex gap-1">
+                <div className="bg-white border border-stone-100 p-3 rounded-2xl rounded-bl-none shadow-sm flex gap-1 animate-fade-in">
                   <div className="w-2 h-2 bg-pink-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
                   <div className="w-2 h-2 bg-pink-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                   <div className="w-2 h-2 bg-pink-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>

@@ -1,5 +1,17 @@
 {
   "name": "Mochi & Co.",
-  "description": "A cute, minimalistic shop for adorable stationery and home goods, featuring an AI shopping assistant.",
+  "short_name": "Mochi",
+  "description": "A cute, minimalistic shop for adorable stationery and home goods.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafaf9",
+  "theme_color": "#fce7f3",
+  "icons": [
+    {
+      "src": "https://fav.farm/🍡",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
   "requestFramePermissions": []
 }
